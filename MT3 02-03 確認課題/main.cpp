@@ -38,8 +38,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Matrix::Plane plane = { {0, 1.0f, 0}, 1.0f };
 	uint32_t planeColor = 0xFFFFFFFF;
+	uint32_t segmentColor = 0xFFFFFFFF;
 
-	/*bool iscollision = Matrix::IsCollision(sphere, plane);*/
+	bool iscollision = Matrix::IsCollision(segment, plane);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -68,11 +69,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		start = Matrix::Transform(Matrix::Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
 		end = Matrix::Transform(Matrix::Transform(Matrix::Add(segment.origin, segment.diff), viewProjectionMatrix), viewportMatrix);
 
-		/*iscollision = Matrix::IsCollision(sphere, plane);
+		iscollision = Matrix::IsCollision(segment, plane);
 		if (iscollision == true) {
-			sphereColor = RED;
+			segmentColor = RED;
 		}
-		else { sphereColor = WHITE;*/
+		else { segmentColor = WHITE; }
 
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraTranslate", &cameraPosition.x, 0.01f);
@@ -95,7 +96,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		matrix.DrawGrid(viewProjectionMatrix, viewportMatrix);
 		matrix.DrawPlane(plane, viewProjectionMatrix, viewportMatrix, planeColor);
-		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
+		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), segmentColor);
 
 		///
 		/// ↑描画処理ここまで

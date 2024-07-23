@@ -272,6 +272,14 @@ public:
 	/// <param name="s2"></param>
 	/// <returns></returns>
 	static bool IsCollision(const Sphere& sphere, const Plane& plane);
+	
+	/// <summary>
+	/// 線と平面の衝突判定
+	/// </summary>
+	/// <param name="segment"></param>
+	/// <param name="plane"></param>
+	/// <returns></returns>
+	static bool IsCollision(const Segment& segment, const Plane& plane);
 
 	/// <summary>
 	/// 垂直ベクトルの生成

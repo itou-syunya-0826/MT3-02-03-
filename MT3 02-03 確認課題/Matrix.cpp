@@ -544,6 +544,28 @@ bool Matrix::IsCollision(const Sphere& sphere, const Plane& plane) {
 	return std::abs(distance) <= sphere.radius;
 }
 
+bool Matrix::IsCollision(const Segment& segment, const Plane& plane)
+{
+	// まず垂直判定を行うために、法線と線の内積を求める
+	float dot = Dot(plane.normal, segment.diff);
+
+	// 垂直＝平行であるので、衝突しているはずがない
+	if (dot == 0.0f) {
+		return false;
+	}
+
+	// tを求める
+	float t = (plane.distance - Dot(segment.origin, plane.normal)) / dot;
+
+	// tの値と線の種類によって衝突しているかを判断する
+	// セグメントの場合、tは[0, 1]の範囲内でなければならない
+	if (t >= 0.0f && t <= 1.0f) {
+		return true;
+	}
+
+	return false;
+}
+
 Vector3 Matrix::Perpendicular(const Vector3& vector) {
 	if (vector.x != 0.0f || vector.y != 0.0f) {
 		return { -vector.y,vector.x,0.0f };
@@ -585,36 +607,6 @@ void Matrix::DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix
 	Novice::DrawLine((int)points[1].x, (int)points[1].y, (int)points[3].x, (int)points[3].y, color);
 	
 }
-
-//void Matrix::DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color) {
-//
-//	// 平面の中心を計算
-//	Vector3 center = Multiply(plane.distance, plane.normal);
-//
-//	// 平面に垂直なベクトルを計算
-//	Vector3 perpendicular1 = Normalize(Perpendicular(plane.normal));
-//	Vector3 perpendicular2 = Cross(plane.normal, perpendicular1);
-//
-//	// 4つの頂点を計算
-//	Vector3 points[4];
-//	points[0] = Add(center, Add(Multiply(2.0f, perpendicular1), Multiply(2.0f, perpendicular2)));
-//	points[1] = Add(center, Subtract(Multiply(2.0f, perpendicular1), Multiply(2.0f, perpendicular2)));
-//	points[2] = Subtract(center, Add(Multiply(2.0f, perpendicular1), Multiply(2.0f, perpendicular2)));
-//	points[3] = Subtract(center, Subtract(Multiply(2.0f, perpendicular1), Multiply(2.0f, perpendicular2)));
-//
-//	for (int32_t index = 0; index < 4; ++index) {
-//		points[index] = Transform(Transform(points[index], viewProjectionMatrix), viewportMatrix);
-//	}
-//
-//	// pointsをそれぞれ結んでDrawLineで矩形を描画する。
-//	for (int32_t i = 0; i < 4; ++i) {
-//		Vector3 start = points[i];
-//		Vector3 end = points[(i + 1) % 4];
-//		Novice::DrawLine((int)start.x, (int)start.y, (int)end.x, (int)end.y, color);
-//	}
-//}
-
-
 
 
 
